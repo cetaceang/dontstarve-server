@@ -43,7 +43,7 @@ pvp = ${PVP:-false}
 pause_when_empty = ${PAUSE_WHEN_EMPTY:-true}
 
 [NETWORK]
-cluster_description = ${SERVER_DESCRIPTION:-A Dockerized Don't Starve Together server}
+cluster_description = ${SERVER_DESCRIPTION:-A Dockerized DST server}
 cluster_name = ${SERVER_NAME:-Docker DST Server}
 cluster_password = ${SERVER_PASSWORD:-}
 cluster_intention = ${CLUSTER_INTENTION:-cooperative}
@@ -129,4 +129,3 @@ case "${ROLE,,}" in
   caves) run_shard Caves ;;
   *) die "unknown role: ${ROLE} (expected prepare, master, or caves)" ;;
 esac
-
