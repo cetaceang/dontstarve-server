@@ -1,0 +1,6 @@
+.env
+secrets/cluster_token.txt
+backups/*.tar.gz
+backups/*.sha256
+data/
+

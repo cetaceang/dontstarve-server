@@ -1,0 +1,73 @@
+name: dontstarve
+
+x-dst-common: &dst-common
+  build:
+    context: .
+  image: dontstarve-server:local
+  env_file:
+    - .env
+  restart: unless-stopped
+  volumes:
+    - dst-server:/opt/dst
+    - dst-cluster:/data
+    - ./config:/config:ro
+    - ./secrets/cluster_token.txt:/run/secrets/cluster_token:ro
+  networks:
+    - dst
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  prepare:
+    <<: *dst-common
+    command: ["prepare"]
+    restart: "no"
+
+  master:
+    <<: *dst-common
+    command: ["master"]
+    depends_on:
+      prepare:
+        condition: service_completed_successfully
+    ports:
+      - "${MASTER_PORT:-10999}:${MASTER_PORT:-10999}/udp"
+      - "${MASTER_STEAM_PORT:-27018}:${MASTER_STEAM_PORT:-27018}/udp"
+      - "${MASTER_AUTH_PORT:-8768}:${MASTER_AUTH_PORT:-8768}/udp"
+    expose:
+      - "${SHARD_MASTER_PORT:-10889}/udp"
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f dontstarve_dedicated_server_nullrenderer >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  caves:
+    <<: *dst-common
+    command: ["caves"]
+    depends_on:
+      prepare:
+        condition: service_completed_successfully
+      master:
+        condition: service_healthy
+    ports:
+      - "${CAVES_PORT:-11000}:${CAVES_PORT:-11000}/udp"
+      - "${CAVES_STEAM_PORT:-27019}:${CAVES_STEAM_PORT:-27019}/udp"
+      - "${CAVES_AUTH_PORT:-8769}:${CAVES_AUTH_PORT:-8769}/udp"
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f dontstarve_dedicated_server_nullrenderer >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+volumes:
+  dst-server:
+  dst-cluster:
+
+networks:
+  dst:
+    driver: bridge
