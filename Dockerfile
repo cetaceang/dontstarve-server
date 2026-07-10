@@ -8,7 +8,7 @@ RUN dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates curl file gettext-base gosu lib32gcc-s1 lib32stdc++6 \
-        libc6-i386 procps tar tini util-linux \
+        libc6-i386 libcurl3t64-gnutls procps tar tini util-linux \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid "${STEAM_GID}" steam \
     && useradd --uid "${STEAM_UID}" --gid steam --create-home --shell /bin/bash steam \
