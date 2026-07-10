@@ -54,6 +54,8 @@ make config       # 展开并验证 Compose 配置
 
 这些模板会在准备阶段复制到集群目录。修改世界生成选项通常只影响新世界；已有世界需要按游戏规则重置后才会重新生成。
 
+地面模板默认设置 `healthpenalty = "none"`，关闭复活造成的最大生命值惩罚。该选项由地面分片控制并自动同步到洞穴，修改后重启现有世界即可生效。
+
 ### Workshop 模组
 
 1. 在 `config/mods/dedicated_server_mods_setup.lua` 中为每个模组添加：
