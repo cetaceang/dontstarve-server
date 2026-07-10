@@ -1,6 +1,6 @@
 # Docker 饥荒联机版专用服务器
 
-使用自建镜像和 Docker Compose 部署《饥荒联机版》（Don't Starve Together）地面与洞穴双分片服务器。服务器文件由 SteamCMD 官方匿名账号下载，世界数据存放在 Docker 卷中。
+使用自建镜像和 Docker Compose 部署《饥荒联机版》（Don't Starve Together）地面与洞穴双分片服务器。服务器文件由 SteamCMD 官方匿名账号下载，世界数据通过宿主机目录挂载持久化。
 
 ## 前置条件
 
@@ -97,13 +97,13 @@ make restore BACKUP=backups/dst-cluster-20260101T120000Z.tar.gz
 
 ## 数据与网络布局
 
-- `dst-server` 卷：SteamCMD 下载的服务端和模组，可重新创建。
-- `dst-cluster` 卷：集群 Token、配置、世界与玩家存档，必须备份。
+- `data/server/`：挂载到容器的 `/opt/dst`，保存 SteamCMD 下载的服务端和模组；可删除后重新下载。
+- `data/cluster/`：挂载到容器的 `/data`，保存集群配置、Token、世界和玩家存档；必须备份。
 - `backups/`：宿主机上的压缩备份。
 - `master`：公开地面游戏端口，并在内部网络监听分片协调端口。
 - `caves`：公开洞穴游戏端口，通过服务名 `master` 加入集群。
 
-删除容器不会删除存档。只有显式执行 `docker compose down -v` 才会删除命名卷，请谨慎使用。
+删除容器不会删除存档，因为数据保存在宿主机的 `data/` 目录。删除 `data/cluster/` 会永久删除世界和玩家数据，请谨慎操作。
 
 ## 排障
 
@@ -111,4 +111,4 @@ make restore BACKUP=backups/dst-cluster-20260101T120000Z.tar.gz
 - **服务器无法搜索到**：确认 UDP 端口已在云安全组和主机防火墙中开放，并查看地面分片日志。
 - **洞穴未连接**：运行 `docker compose logs caves master`，检查 Master 是否健康以及 `SHARD_MASTER_PORT` 是否被意外修改。
 - **SteamCMD 下载失败**：确认主机可访问 Steam CDN，然后重新执行 `make update`。
-- **权限错误**：镜像入口会修复命名卷所有权；若使用自定义宿主机绑定目录，需要允许容器中的默认 UID/GID 10001 写入，或通过构建参数调整它们。
+- **权限错误**：镜像入口会将 `data/server/` 和 `data/cluster/` 调整为容器中的默认 UID/GID 10001；宿主机普通用户可能需要 `sudo` 才能直接读取其中部分文件。

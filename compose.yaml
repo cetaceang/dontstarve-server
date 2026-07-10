@@ -8,8 +8,8 @@ x-dst-common: &dst-common
     - .env
   restart: unless-stopped
   volumes:
-    - dst-server:/opt/dst
-    - dst-cluster:/data
+    - ./data/server:/opt/dst
+    - ./data/cluster:/data
     - ./config:/config:ro
     - ./secrets/cluster_token.txt:/run/secrets/cluster_token:ro
   networks:
@@ -63,10 +63,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 90s
-
-volumes:
-  dst-server:
-  dst-cluster:
 
 networks:
   dst:

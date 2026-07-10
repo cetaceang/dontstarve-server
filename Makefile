@@ -6,7 +6,7 @@ COMPOSE := docker compose
 init:
 	@test -f .env || cp .env.example .env
 	@test -f secrets/cluster_token.txt || cp secrets/cluster_token.txt.example secrets/cluster_token.txt
-	@mkdir -p backups
+	@mkdir -p backups data/server data/cluster
 	@echo "Initialization complete. Edit .env and secrets/cluster_token.txt before starting."
 
 build:
