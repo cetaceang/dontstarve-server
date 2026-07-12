@@ -68,6 +68,7 @@ server_port = ${port}
 
 [SHARD]
 is_master = ${is_master}
+name = ${shard}
 
 [STEAM]
 master_server_port = ${steam_port}
