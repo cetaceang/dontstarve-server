@@ -47,6 +47,7 @@ cluster_description = ${SERVER_DESCRIPTION:-A Dockerized DST server}
 cluster_name = ${SERVER_NAME:-Docker DST Server}
 cluster_password = ${SERVER_PASSWORD:-}
 cluster_intention = ${CLUSTER_INTENTION:-cooperative}
+cluster_language = ${SERVER_LANGUAGE:-en}
 
 [MISC]
 console_enabled = true
