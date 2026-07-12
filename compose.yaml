@@ -7,6 +7,7 @@ x-dst-common: &dst-common
   env_file:
     - .env
   restart: unless-stopped
+  stop_grace_period: 90s
   volumes:
     - ./data/server:/opt/dst
     - ./data/cluster:/data
